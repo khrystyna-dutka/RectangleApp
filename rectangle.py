@@ -1,4 +1,4 @@
-# Програма для побудови прямокутників (без GUI)
+import argparse
 
 # Model
 class Rectangle:
@@ -29,40 +29,33 @@ class RectangleController:
 
 # Main function
 def main():
+    parser = argparse.ArgumentParser(description="Rectangle Drawer")
+    parser.add_argument("--action", type=str, choices=["add", "list"], required=True, help="Action to perform: add or list")
+    parser.add_argument("--x", type=int, help="X coordinate of the rectangle")
+    parser.add_argument("--y", type=int, help="Y coordinate of the rectangle")
+    parser.add_argument("--width", type=int, help="Width of the rectangle")
+    parser.add_argument("--height", type=int, help="Height of the rectangle")
+    parser.add_argument("--color", type=str, help="Color of the rectangle")
+
+    args = parser.parse_args()
     controller = RectangleController()
 
-    while True:
-        print("\n--- Rectangle Drawer ---")
-        print("1. Add Rectangle")
-        print("2. List Rectangles")
-        print("3. Exit")
-        choice = input("Enter your choice: ")
-
-        if choice == "1":
-            try:
-                x = int(input("Enter x: "))
-                y = int(input("Enter y: "))
-                width = int(input("Enter width: "))
-                height = int(input("Enter height: "))
-                color = input("Enter color (e.g., red, #FF0000): ")
-
-                controller.add_rectangle(x, y, width, height, color)
-                print("Rectangle added successfully!")
-            except ValueError:
-                print("Invalid input. Please enter numeric values for x, y, width, and height.")
-        elif choice == "2":
-            print("\n--- List of Rectangles ---")
-            rectangles = controller.list_rectangles()
-            if rectangles:
-                for i, rect in enumerate(rectangles, start=1):
-                    print(f"{i}. {rect}")
-            else:
-                print("No rectangles added yet.")
-        elif choice == "3":
-            print("Exiting the program. Goodbye!")
-            break
+    if args.action == "add":
+        if args.x is None or args.y is None or args.width is None or args.height is None or args.color is None:
+            print("To add a rectangle, you must provide --x, --y, --width, --height, and --color.")
         else:
-            print("Invalid choice. Please try again.")
+            controller.add_rectangle(args.x, args.y, args.width, args.height, args.color)
+            print("Rectangle added successfully!")
+
+    elif args.action == "list":
+        print("\n--- List of Rectangles ---")
+        rectangles = controller.list_rectangles()
+        if rectangles:
+            for i, rect in enumerate(rectangles, start=1):
+                print(f"{i}. {rect}")
+        else:
+            print("No rectangles added yet.")
+
 
 if __name__ == "__main__":
     main()
